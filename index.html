@@ -9,7 +9,7 @@
         <style>
 .conteiner{
   position:  relative;
-  width: 400px;
+  width: 100%;
 }
 .switch {
   position: relative;
@@ -105,14 +105,14 @@ tr:nth-child(even) {
 
 .myslider {
     -webkit-appearance: none;
-    width: 100%;
-    height: 20px;
+    width: 58px;
+    height: 28px;
     background: #d3d3d3;
     outline: none;
     opacity: 0.7;
-    border-radius: 10px;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
+    border-radius: 14px;
+    -webkit-transition: .5s;
+    transition: opacity .5s;
     border: 1px solid #008855;
     box-shadow: 1px 1px 4px #00AA88;
 
@@ -125,12 +125,22 @@ tr:nth-child(even) {
 .myslider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
       left: -1px;
   bottom: -1px;
 
-    background: #2196F3;
+    background: #008855;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid #008855;
+
+}
+.myslider::-webkit-slider-thumb:before {
+    width: 28px;
+    height: 10px;
+ 
+    background: #FFF;
     cursor: pointer;
     border-radius: 50%;
     border: 1px solid #008855;
@@ -203,7 +213,7 @@ tr:nth-child(even) {
     function Relay(name){
       //var OO = this;
       var Zona = name;
-      var Timer = 90;
+      var Timer = 0;
       var relay_num = relays_count++;
       var name = 'Relay'+relay_num;
       var relay_checked = false;
@@ -247,7 +257,7 @@ tr:nth-child(even) {
               newRange.type = 'range';
               newRange.className = 'myslider';
               newRange.min = '0';
-              newRange.max = '255';
+              newRange.max = '1';
               newRange.id = 'Relay' + relays_count; // need unique Ids!
               newRange.value = Timer;
               //newCheckBox.checked = 'checked';
@@ -255,18 +265,39 @@ tr:nth-child(even) {
               span.id = 'Relay' + relays_count+ '_Value';
               span.innerHTML = newRange.value;
               newRange.oninput =  function() {
+                if(newRange.value >= 240 & newRange.value < 248) newRange.value = 240;
+                if(newRange.value >= 248 & newRange.value < 255) newRange.value = 255;
+
                   Timer = newRange.value;
                   span.innerHTML = newRange.value;
                   spantime.innerHTML = newRange.value;
                   if(Timer == 0) relay_checked = newCheckBox.checked = false;
               }
-              newRange.onchange = message;
+              newRange.onchange = function(){//message;
+                if(newRange.value == 1) {
+                  newRange.style.width = "100%";
+                  newRange.max = '255';
+                  newRange.value = "255";
+                  span.innerHTML = newRange.value;
+                }
+                if(newRange.value == 0) {
+                  newRange.style.width = "58px";
+                  newRange.max = '1';
+                  newRange.value = "0";
+                }
+                if(newRange.value >= 240 & newRange.value < 248) newRange.value = 240;
+                if(newRange.value >= 248 & newRange.value < 255) newRange.value = 255;
+
+                span.innerHTML = newRange.value;
+                Timer = newRange.value;
+                message();
+              }
+          td31.appendChild(span);
           td34.appendChild(newRange);
-          //td34.appendChild(span);
           
         tr31.appendChild(td31); //кладем в новосозданную строку первый новосозданный столбец
-        tr31.appendChild(td32); //кладем в новосозданную строку второй новосозданный столбец
-        tr31.appendChild(td33); //кладем в новосозданную строку первый новосозданный столбец
+        //tr31.appendChild(td32); //кладем в новосозданную строку второй новосозданный столбец
+        //tr31.appendChild(td33); //кладем в новосозданную строку первый новосозданный столбец
         tr31.appendChild(td34); //кладем в новосозданную строку второй новосозданный столбец
         table.appendChild(tr31); //кладем в таблицу новосозданную строку (последней)
       }
@@ -277,9 +308,7 @@ tr:nth-child(even) {
 <div class='conteiner'>
 <table id="table1" border="8">
   <tr>
-    <th width="20%">Зона</th>
-    <th width="10%">Реле</th>
-    <th width="100px"></th>
+    <th width="50%">Зона</th>
     <th width="50%">Тимер</th>
   </tr>
 </table>
